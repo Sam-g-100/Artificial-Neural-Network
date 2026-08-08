@@ -1,0 +1,71 @@
+import numpy as np  
+# Import NumPy for vector and matrix operations
+
+# Step 1: Define first pair of associated patterns
+x1 = np.array([1, 1, 1 ,-1])
+# Input pattern 1 (bipolar values: 1 or -1)
+
+y1 = np.array([1, 1, -1, -1])
+# Output pattern associated with x1
+
+# Step 2: Define second pair of associated patterns
+x2 = np.array([-1, -1, 1 ,1])
+# Input pattern 2
+
+y2 = np.array([-1, -1, 1, 1])
+# Output pattern associated with x2
+
+# Step 3: Compute Weight Matrix using BAM rule
+W = np.outer(x1, y1) + np.outer(x2, y2)
+# np.outer(x, y):
+#   Computes outer product → matrix
+#   Each element = x[i] * y[j]
+# This creates association between x and y
+# Final W = sum of outer products of all pattern pairs
+# This is Hebbian learning in BAM:
+#   W = Σ (x_k * y_k^T)
+
+# Step 4: Print weight matrix
+print("Weight Matrix W:\n", W)
+# Shows learned associations
+
+print("\n----- FORWARD PASS -----")
+
+# Step 5: Forward pass (x → y)
+
+print("Input x1:", x1)
+out_y1 = np.sign(np.dot(x1, W))
+# np.dot(x1, W):
+#   Multiply input vector with weight matrix
+#   Produces activation values
+# np.sign():
+#   Converts values → +1 or -1
+#   This is bipolar activation function
+# Result should match y1
+
+print("Output y1:", out_y1)
+
+print("\nInput x2:", x2)
+out_y2 = np.sign(np.dot(x2, W))
+# Same process for second pattern
+# Should reconstruct y2
+
+print("Output y2:", out_y2)
+
+print("\n----- BACKWARD PASS -----")
+
+# Step 6: Backward pass (y → x)
+
+print("Input y1:", out_y1)
+rec_x1 = np.sign(np.dot(out_y1, W.T))
+# W.T → transpose of weight matrix
+# Reverse mapping (output → input)
+# Should reconstruct original x1
+
+print("Recovered x1:", rec_x1)
+
+print("\nInput y2:", out_y2)
+rec_x2 = np.sign(np.dot(out_y2, W.T))
+# Same backward process for second pattern
+
+print("Recovered x2:", rec_x2)
