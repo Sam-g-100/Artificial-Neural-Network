@@ -1,0 +1,118 @@
+import tensorflow as tf  
+# Import TensorFlow library (used for deep learning models)
+
+# Step 1: Load dataset
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+# MNIST dataset:
+# x_train → training images (60,000 images)
+# y_train → training labels (0–9 digits)
+# x_test → testing images (10,000 images)
+# Each image is 28x28 grayscale
+
+# Step 2: Preprocess data
+x_train = x_train.reshape(-1, 28, 28, 1) / 255.0
+# reshape(-1, 28, 28, 1):
+#   -1 → automatically calculates number of samples
+#   28x28 → image height and width
+#   1 → channel (grayscale image)
+# /255.0 → normalize pixel values (0–255 → 0–1)
+# Normalization improves training performance
+
+x_test = x_test.reshape(-1, 28, 28, 1) / 255.0
+# Same preprocessing applied to test data
+
+# Step 3: Build CNN Model
+model = tf.keras.Sequential([
+    
+    tf.keras.layers.Conv2D(32, 3, activation='relu', input_shape=(28, 28, 1)),
+    # Conv2D:
+    # 32 filters → detects 32 different features
+    # kernel size = 3x3
+    # activation='relu' → removes negative values (adds non-linearity)
+    # input_shape → defines input image size
+
+    tf.keras.layers.MaxPooling2D(),
+    # MaxPooling:
+    # Reduces image size (downsampling)
+    # Keeps important features, reduces computation
+
+    tf.keras.layers.Conv2D(64, 3, activation='relu'),
+    # Second convolution layer:
+    # 64 filters → deeper feature extraction
+    # Learns more complex patterns (edges → shapes → digits)
+
+    tf.keras.layers.MaxPooling2D(),
+    # Again reduce size and keep strong features
+
+    tf.keras.layers.Flatten(),
+    # Converts 2D feature maps into 1D vector
+    # Required before passing to Dense layer
+
+    tf.keras.layers.Dense(64, activation='relu'),
+    # Fully connected layer with 64 neurons
+    # Learns combination of extracted features
+
+    tf.keras.layers.Dense(10, activation='softmax')
+    # Output layer:
+    # 10 neurons → digits (0–9)
+    # softmax → converts output into probabilities (sum = 1)
+])
+
+# Step 4: Compile model
+model.compile(
+    optimizer='adam',
+    # Adam optimizer → adaptive learning rate, fast convergence
+
+    loss='sparse_categorical_crossentropy',
+    # Used for multi-class classification with integer labels (0–9)
+
+    metrics=['accuracy']
+    # Track accuracy during training
+)
+
+# Step 5: Train model
+history = model.fit(
+    x_train, y_train,
+    epochs=1,
+    # Number of training cycles (increase for better accuracy)
+
+    validation_data=(x_test, y_test),
+    # Model checks performance on unseen data after each epoch
+
+    verbose=0
+    # No progress bar shown
+)
+
+# Step 6: Evaluate model
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
+# Evaluate performance on test dataset
+# Returns loss and accuracy
+
+# Step 7: Display results
+print("\n" + "="*40)
+print("      TRAINING SUMMARY")
+print("="*40)
+
+print(f"Training Accuracy   : {history.history['accuracy'][-1]:.4f}")
+# Final training accuracy
+
+print(f"Training Loss       : {history.history['loss'][-1]:.4f}")
+# Final training loss
+
+print(f"Validation Accuracy : {history.history['val_accuracy'][-1]:.4f}")
+# Accuracy on validation data
+
+print(f"Validation Loss     : {history.history['val_loss'][-1]:.4f}")
+# Loss on validation data
+
+print("\n" + "="*40)
+print("      TEST RESULTS")
+print("="*40)
+
+print(f"Test Accuracy       : {test_acc:.4f}")
+# Final accuracy on test data
+
+print(f"Test Loss           : {test_loss:.4f}")
+# Final loss on test data
+
+print("="*40)
