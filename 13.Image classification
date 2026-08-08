@@ -1,0 +1,117 @@
+import tensorflow as tf, matplotlib.pyplot as plt  
+# Import TensorFlow for deep learning
+# Import matplotlib for plotting graphs
+
+from tensorflow.keras import layers, models  
+# Import layers (Conv2D, Dense, etc.) and model builder
+
+# Step 1: Load CIFAR-10 dataset
+(x_train,y_train),(x_test,y_test)=tf.keras.datasets.cifar10.load_data()
+# CIFAR-10:
+# 60,000 color images (32x32x3)
+# 10 classes (airplane, car, bird, etc.)
+# x_train → training images
+# y_train → labels
+# x_test → testing images
+# y_test → labels
+
+# Step 2: Normalize data
+x_train,x_test=x_train/255.0,x_test/255.0
+# Pixel values range 0–255 → convert to 0–1
+# Helps faster and stable training
+
+# ================= MODEL 1 (Basic CNN) =================
+m1=models.Sequential([
+
+layers.Conv2D(32,3,activation='relu',input_shape=(32,32,3)),
+# 32 filters, 3x3 kernel
+# Detects basic features like edges/colors
+# input_shape = 32x32 image with 3 color channels (RGB)
+
+layers.MaxPooling2D(),
+# Downsampling → reduces size
+# Keeps strongest features, reduces computation
+
+layers.Flatten(),
+# Convert 2D feature maps → 1D vector
+
+layers.Dense(10,activation='softmax')
+# Output layer:
+# 10 neurons → 10 classes
+# softmax → probability distribution
+])
+
+# Compile model 1
+m1.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+# Adam → fast optimizer
+# sparse_categorical_crossentropy → for multi-class classification (labels as integers)
+# accuracy → performance metric
+
+# Train model 1
+h1=m1.fit(x_train,y_train,epochs=5,validation_data=(x_test,y_test))
+# Train for 5 epochs
+# validation_data → evaluate on test set after each epoch
+# h1 stores training history (accuracy, loss)
+
+# ================= MODEL 2 (Improved CNN) =================
+m2=models.Sequential([
+
+layers.Conv2D(32,3,activation='relu',input_shape=(32,32,3)),
+# First convolution layer (same as model 1)
+
+layers.MaxPooling2D(),
+# Reduce size
+
+layers.Conv2D(64,3,activation='relu'),
+# Second convolution layer:
+# 64 filters → deeper feature extraction
+# Learns more complex patterns
+
+layers.MaxPooling2D(),
+# Further downsampling
+
+layers.Flatten(),
+# Convert feature maps → vector
+
+layers.Dense(64,activation='relu'),
+# Fully connected layer:
+# Learns combinations of features
+
+layers.Dropout(0.5),
+# Dropout:
+# Randomly disables 50% neurons during training
+# Prevents overfitting (model memorizing data)
+
+layers.Dense(10,activation='softmax')
+# Output layer (same as model 1)
+])
+
+# Compile model 2
+m2.compile(
+    optimizer=tf.keras.optimizers.Adam(0.0005),
+    # Lower learning rate (0.0005)
+    # More stable and controlled learning
+
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train model 2
+h2=m2.fit(x_train,y_train,epochs=10,validation_data=(x_test,y_test))
+# Train longer (10 epochs)
+# Should perform better than model 1
+
+# ================= GRAPH: VALIDATION ACCURACY =================
+plt.plot(h1.history['val_accuracy']); plt.plot(h2.history['val_accuracy'])
+# Plot validation accuracy of both models
+
+plt.legend(['basic','improved']); plt.show()
+# Add legend → compare models
+# Show graph
+
+# ================= GRAPH: VALIDATION LOSS =================
+plt.plot(h1.history['val_loss']); plt.plot(h2.history['val_loss'])
+# Plot validation loss of both models
+
+plt.legend(['basic','improved']); plt.show()
+# Show graph comparison
