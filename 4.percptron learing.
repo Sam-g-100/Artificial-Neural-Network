@@ -1,0 +1,281 @@
+# Import NumPy library
+#
+# NumPy is used for:
+# - Array handling
+# - Mathematical operations
+# - Matrix calculations
+# - Dot product operations used in neural networks
+import numpy as np
+
+
+# Import Matplotlib pyplot module
+#
+# pyplot is used for:
+# - plotting graphs
+# - visualization
+# - drawing decision boundary
+import matplotlib.pyplot as plt
+
+
+# Define input dataset for AND gate
+#
+# Each row represents one training sample
+#
+# Truth Table:
+#
+# x1  x2
+# 0   0
+# 0   1
+# 1   0
+# 1   1
+#
+# np.array converts list into matrix form
+X = np.array([
+
+    # First input pair
+    [0, 0],
+
+    # Second input pair
+    [0, 1],
+
+    # Third input pair
+    [1, 0],
+
+    # Fourth input pair
+    [1, 1]
+])
+
+
+# Define target outputs for AND gate
+#
+# AND Gate Rules:
+#
+# 0 AND 0 = 0
+# 0 AND 1 = 0
+# 1 AND 0 = 0
+# 1 AND 1 = 1
+#
+# Therefore target vector becomes:
+# [0,0,0,1]
+T = np.array([0, 0, 0, 1])
+
+
+# Initialize weights with zeros
+#
+# Since there are 2 inputs,
+# we need 2 weights
+#
+# Initial weights:
+# w = [0.0, 0.0]
+w = np.zeros(2)
+
+
+# Initialize bias value
+#
+# Bias shifts decision boundary
+# Initial bias is 0
+b = 0
+
+
+# Define learning rate
+#
+# Learning rate controls:
+# how much weights change during learning
+#
+# Small learning rate:
+# slow learning
+#
+# Large learning rate:
+# fast but unstable learning
+lr = 0.1
+
+
+# Start training process
+#
+# range(10) means:
+# train network for 10 epochs
+#
+# One epoch =
+# complete pass through all training samples
+for epoch in range(10):
+
+
+    # Loop through all input samples
+    #
+    # len(X) = 4
+    #
+    # So loop runs 4 times
+    for i in range(len(X)):
+
+
+        # Calculate net input
+        #
+        # Formula:
+        #
+        # net = x1*w1 + x2*w2 + b
+        #
+        # np.dot() performs dot product
+        #
+        # Example:
+        #
+        # input = [1,0]
+        # weight = [0.2,0.3]
+        #
+        # net = (1*0.2)+(0*0.3)+b
+        net = np.dot(w, X[i]) + b
+
+
+        # Apply Binary Step Activation Function
+        #
+        # If net >= 0
+        # output becomes 1
+        #
+        # Else output becomes 0
+        #
+        # This converts continuous value
+        # into binary classification
+        if net >= 0:
+
+            y = 1
+
+        else:
+
+            y = 0
+
+
+        # Calculate error
+        #
+        # Formula:
+        #
+        # error = target - output
+        #
+        # Example:
+        #
+        # target = 1
+        # output = 0
+        #
+        # error = 1
+        error = T[i] - y
+
+
+        # Update weights using Perceptron Learning Rule
+        #
+        # Formula:
+        #
+        # w(new) = w(old) + learning_rate * error * input
+        #
+        # If error is non-zero,
+        # weights get adjusted
+        #
+        # This helps network learn correct output
+        w = w + lr * error * X[i]
+
+
+        # Update bias
+        #
+        # Formula:
+        #
+        # b(new) = b(old) + learning_rate * error
+        #
+        # Bias also learns during training
+        b = b + lr * error
+
+
+# Print final learned weights
+print("Final Weights :", w)
+
+
+# Print final bias value
+print("Final Bias :", b)
+
+
+# Print testing heading
+print("\nTesting AND Gate")
+
+
+# Testing phase starts
+#
+# Check outputs after training
+for i in range(len(X)):
+
+
+    # Calculate net value again
+    net = np.dot(w, X[i]) + b
+
+
+    # Apply activation function
+    if net >= 0:
+
+        y = 1
+
+    else:
+
+        y = 0
+
+
+    # Print input and predicted output
+    print(X[i], "->", y)
+
+
+# Generate 100 equally spaced x-axis values
+#
+# Values range from:
+# -0.5 to 1.5
+#
+# Used for plotting decision boundary line
+x1 = np.linspace(-0.5, 1.5, 100)
+
+
+# Calculate corresponding x2 values
+#
+# Decision boundary equation:
+#
+# w1*x1 + w2*x2 + b = 0
+#
+# Rearranging:
+#
+# x2 = -(w1*x1 + b)/w2
+#
+# This line separates classes
+x2 = -(w[0] * x1 + b) / w[1]
+
+
+# Plot training data points
+#
+# X[:,0] -> all x1 values
+# X[:,1] -> all x2 values
+#
+# c=T colors points according to target class
+#
+# cmap='bwr'
+# blue -> class 0
+# red  -> class 1
+#
+# s=100 sets point size
+plt.scatter(X[:, 0], X[:, 1], c=T, cmap='bwr', s=100)
+
+
+# Plot decision boundary line
+#
+# 'g' means green color
+plt.plot(x1, x2, 'g')
+
+
+# Set graph title
+plt.title("AND Gate Perceptron")
+
+
+# Label x-axis
+plt.xlabel("x1")
+
+
+# Label y-axis
+plt.ylabel("x2")
+
+
+# Enable grid for better visualization
+plt.grid()
+
+
+# Display graph on screen
+plt.show()
