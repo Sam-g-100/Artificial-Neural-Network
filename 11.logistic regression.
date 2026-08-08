@@ -1,0 +1,69 @@
+import numpy as np  
+# Import NumPy for numerical operations and array handling
+
+import tensorflow as tf  
+# Import TensorFlow for building and training neural networks
+
+# Step 1: Training data (clear pattern)
+x = np.array([[1], [2], [3], [4], [5], [6], [7], [8]])
+# Input feature (hours studied)
+# Shape = (8 samples, 1 feature)
+
+y = np.array([[0], [0], [0], [0], [0], [1], [1], [1]])
+# Output labels (target)
+# 0 = fail, 1 = pass
+# Pattern: below ~6 → fail, above → pass
+
+# Step 2: Build Model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, activation='sigmoid', input_shape=(1,))
+])
+# Sequential → simple stack of layers
+# Dense(1) → 1 neuron (output layer)
+# input_shape=(1,) → one input feature
+# sigmoid activation:
+#   Converts output into probability (0 to 1)
+#   Formula: 1 / (1 + e^-x)
+
+# Step 3: Compile Model
+model.compile(optimizer='sgd', loss='binary_crossentropy')
+# optimizer='sgd' → Stochastic Gradient Descent
+#   Updates weights step by step to reduce error
+# loss='binary_crossentropy' → used for binary classification
+#   Measures difference between actual and predicted values
+
+# Step 4: Train Model
+model.fit(x, y, epochs=500, verbose=0)
+# Train model on data
+# epochs=500 → repeat training 500 times
+# verbose=0 → no training logs shown
+
+# Step 5: Take input from user
+h = float(input("Enter the hours: "))
+# User enters study hours (e.g., 5.5)
+
+# Step 6: Reshape input
+X = np.array([[h]])
+# Model expects 2D input → shape (1,1)
+# So we convert single value into 2D array
+
+# Step 7: Prediction
+pred = model.predict(X)
+# Model outputs probability between 0 and 1
+# Example: 0.8 → high chance of passing
+
+# Step 8: Decision making
+if pred[0][0] > 0.5:
+    result = "pass"
+else:
+    result = "fail"
+# Threshold = 0.5
+# >0.5 → pass
+# ≤0.5 → fail
+
+# Step 9: Output result
+print("Probability:", pred[0][0])
+# Shows confidence of prediction
+
+print("Prediction:", result)
+# Final decision (pass/fail)
