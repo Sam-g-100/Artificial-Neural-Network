@@ -1,0 +1,260 @@
+# Import NumPy library
+# NumPy is mainly used for:
+# 1. Array handling
+# 2. Matrix operations
+# 3. Mathematical calculations
+# 4. Neural network computations
+import numpy as np
+
+
+# Create an empty list named x
+# This list will store binary input patterns
+x = []
+
+
+# Loop through digits from 0 to 9
+# range(10) generates numbers:
+# 0,1,2,3,4,5,6,7,8,9
+for i in range(10):
+
+
+    # Convert current digit into string
+    # Then find its ASCII value using ord()
+    #
+    # Example:
+    # ord('0') = 48
+    # ord('1') = 49
+    # ord('2') = 50
+    #
+    # ASCII = American Standard Code for Information Interchange
+    asc = ord(str(i))
+
+
+    # Convert ASCII value into 7-bit binary representation
+    #
+    # format(number, '07b')
+    #
+    # 07  -> total width should be 7 bits
+    # b   -> binary format
+    #
+    # Example:
+    # 48 -> 0110000
+    # 49 -> 0110001
+    bin_str = format(asc, '07b')
+
+
+    # Convert each binary character into integer
+    #
+    # Example:
+    # "0110000"
+    #
+    # becomes:
+    # [0,1,1,0,0,0,0]
+    #
+    # List comprehension is used here
+    bit = [int(j) for j in bin_str]
+
+
+    # Append binary list into x
+    #
+    # After appending:
+    # x becomes list of binary patterns
+    x.append(bit)
+
+
+# Convert Python list into NumPy array
+#
+# Why?
+# Because NumPy arrays support:
+# - fast computation
+# - vector operations
+# - matrix multiplication
+x = np.array(x)
+
+
+# Initialize weight vector with zeros
+#
+# Input contains 7 binary bits
+# Therefore we need 7 weights
+#
+# Initially:
+# w = [0. 0. 0. 0. 0. 0. 0.]
+w = np.zeros(7)
+
+
+# Initialize bias value
+#
+# Bias shifts decision boundary
+# Initial bias is set to 0
+b = 0
+
+
+# Target outputs
+#
+# Even numbers  -> 1
+# Odd numbers   -> 0
+#
+# Digit : Target
+# 0 -> 1
+# 1 -> 0
+# 2 -> 1
+# 3 -> 0
+# 4 -> 1
+# 5 -> 0
+# 6 -> 1
+# 7 -> 0
+# 8 -> 1
+# 9 -> 0
+t = [1,0,1,0,1,0,1,0,1,0]
+
+
+# Learning rate
+#
+# Controls how much weights change
+# during learning
+#
+# Smaller value = slow learning
+# Larger value = fast learning
+alpha = 0.1
+
+
+# Number of training cycles
+#
+# One epoch means:
+# Entire training data is processed once
+epochs = 1
+
+
+# Start training process
+#
+# Outer loop controls epochs
+for epoch in range(epochs):
+
+
+    # Loop through all 10 training samples
+    for i in range(10):
+
+
+        # Calculate weighted sum
+        #
+        # Formula:
+        #
+        # yin = x1*w1 + x2*w2 + ... + xn*wn + b
+        #
+        # np.dot() performs dot product
+        #
+        # Example:
+        # Input  = [0,1,1,0,0,0,0]
+        # Weight = [0.2,0.1,...]
+        #
+        # Weighted sum is calculated
+        wsum = np.dot(x[i], w) + b
+
+
+        # Apply activation function
+        #
+        # If weighted sum >= 0
+        # output becomes 1
+        #
+        # Otherwise output becomes 0
+        #
+        # This is called Binary Step Activation Function
+        if wsum >= 0:
+
+            yin = 1
+
+        else:
+
+            yin = 0
+
+
+        # Calculate error
+        #
+        # Formula:
+        #
+        # Error = Target - Predicted Output
+        #
+        # Example:
+        # target = 1
+        # output = 0
+        # error  = 1
+        error = t[i] - yin
+
+
+        # Update weights using Perceptron Learning Rule
+        #
+        # Formula:
+        #
+        # w(new) = w(old) + alpha * error * input
+        #
+        # If prediction is wrong:
+        # weights are adjusted
+        #
+        # If prediction is correct:
+        # weights remain unchanged
+        w = w + alpha * error * x[i]
+
+
+        # Update bias
+        #
+        # Formula:
+        #
+        # b(new) = b(old) + alpha * error
+        #
+        # Bias helps improve classification
+        b = b + alpha * error
+
+
+# Print heading for output table
+print("\nDigit  binary input   output  type\n")
+
+
+# Testing phase starts
+#
+# After training, network predictions are checked
+for i in range(10):
+
+
+    # Calculate weighted sum again
+    wsum = np.dot(x[i], w) + b
+
+
+    # Apply activation function again
+    if wsum >= 0:
+
+        yin = 1
+
+    else:
+
+        yin = 0
+
+
+    # Convert output into readable label
+    #
+    # 1 -> Even
+    # 0 -> Odd
+    if yin == 1:
+
+        result = "Even"
+
+    else:
+
+        result = "Odd"
+
+
+    # Print:
+    # digit
+    # binary input
+    # predicted output
+    # type (Even/Odd)
+    print(i, "  ", x[i], "  ", yin, " ", result)
+
+
+# Print final learned weights
+#
+# These weights are adjusted during training
+print("\nFinal Weights:", w)
+
+
+# Print final bias value
+print("Final Bias:", b)
