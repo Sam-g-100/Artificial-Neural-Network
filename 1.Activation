@@ -1,0 +1,161 @@
+
+import numpy as np
+import matplotlib.pyplot as mp
+
+
+# Define Sigmoid Activation Function
+# Sigmoid converts input values into values between 0 and 1
+# Formula: 1 / (1 + e^-x)
+# Mostly used in binary classification problems
+def sigmoid(x):
+
+    # np.exp(-x) calculates exponential value e^-x
+    # Adding 1 prevents division issues
+    # Entire formula compresses values into range (0,1)
+    return 1 / (1 + np.exp(-x))
+
+
+# Define Hyperbolic Tangent (tanh) Activation Function
+# tanh converts values into range between -1 and 1
+# It is centered around zero, so training is often faster than sigmoid
+def tanh(x):
+
+    # np.tanh(x) directly calculates tanh values
+    return np.tanh(x)
+
+
+# Define ReLU (Rectified Linear Unit) Activation Function
+# ReLU returns:
+# 0 if input < 0
+# input itself if input >= 0
+# It is one of the most commonly used activation functions in deep learning
+def relu(x):
+
+    # np.maximum(0, x) compares each value with 0
+    # Negative values become 0
+    # Positive values remain unchanged
+    return np.maximum(0, x)
+
+
+# Generate 20 equally spaced values between -10 and 10
+# These values will act as inputs for activation functions
+x = np.linspace(-10, 10, 20)
+
+
+# Pass input values to Sigmoid function
+# Stores output values in variable y
+y = sigmoid(x)
+
+
+# Pass input values to tanh function
+# Stores output values in variable y1
+y1 = tanh(x)
+
+
+# Pass input values to ReLU function
+# Stores output values in variable y2
+y2 = relu(x)
+
+
+# Create a figure/window for plotting graphs
+# figsize=(15,10) means:
+# width = 15 inches
+# height = 10 inches
+mp.figure(figsize=(15,10))
+
+
+# Add title to the complete figure
+# color="red" makes title red
+# fontsize=20 increases title size
+mp.title("Activation Function", color="red", fontsize=20)
+
+
+# Create first subplot
+# (2,2,1) means:
+# 2 rows
+# 2 columns
+# current graph position = 1
+mp.subplot(2,2,1)
+
+
+# Plot Sigmoid graph
+# x → input values
+# y → sigmoid outputs
+# color="blue" sets line color
+# marker="o" shows circular points
+# label is used in legend
+mp.plot(x, y, color="blue", marker="o", label="Sigmoid")
+
+
+# Label for X-axis
+mp.xlabel("Input")
+
+
+# Label for Y-axis
+mp.ylabel("Output")
+
+
+# Display legend box
+# Shows graph name
+mp.legend()
+
+
+# Display background grid
+# Makes graph easier to read
+mp.grid()
+
+
+# Create second subplot
+# Position = 2
+mp.subplot(2,2,2)
+
+
+# Plot tanh graph
+# Red color with circular markers
+mp.plot(x, y1, color="red", marker="o", label="Hyperbolic Tangent")
+
+
+# Label X-axis
+mp.xlabel("Input")
+
+
+# Label Y-axis
+mp.ylabel("Output")
+
+
+# Show legend
+mp.legend()
+
+
+# Show grid
+mp.grid()
+
+
+# Create third subplot
+# Position = 3
+mp.subplot(2,2,3)
+
+
+# Plot ReLU graph
+# Orange colored graph with markers
+mp.plot(x, y2, color="orange", marker="o", label="ReLU")
+
+
+# Label X-axis
+mp.xlabel("Input")
+
+
+# Label Y-axis
+mp.ylabel("Output")
+
+
+# Show legend
+mp.legend()
+
+
+# Enable grid
+mp.grid()
+
+
+# Display all graphs on screen
+mp.show()
