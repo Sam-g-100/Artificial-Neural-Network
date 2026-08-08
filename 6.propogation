@@ -1,0 +1,122 @@
+import numpy as np  
+# Import NumPy for matrix operations
+
+import numpy.random as ar  
+# Import random module to initialize weights
+
+# Step 1: Input and Output (XOR problem)
+X = np.array([[0,0],[0,1],[1,0],[1,1]])
+# 4 input combinations of XOR
+
+Y = np.array([[0],[1],[1],[0]])
+# Expected outputs for XOR
+
+lr = 0.5  
+# Learning rate (controls how fast weights update)
+
+np.random.seed(0)  
+# Fix random values for reproducibility
+
+# Step 2: Initialize weights
+print("WEIGHTS")
+
+W1 = ar.rand(2,2)
+# Weight matrix from input layer → hidden layer
+# 2 inputs → 2 hidden neurons
+
+print("W1=", W1)
+
+W2 = ar.rand(2,1)
+# Weight matrix from hidden layer → output layer
+# 2 hidden neurons → 1 output neuron
+
+print("W2=", W2)
+
+# Step 3: Activation function (Sigmoid)
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+# Converts values into range (0,1)
+# Used for non-linearity
+
+# NOTE: This print will never execute because it's after return
+# print("HIDDEN LAYER")
+
+# Step 4: Forward pass (initial)
+x = np.dot(X, W1)
+# Input → hidden layer multiplication
+
+h = sigmoid(x)
+# Apply activation → hidden layer output
+
+print("Output of hidden layer (h) =", h)
+
+print("OUTPUT LAYER")
+
+y = np.dot(h, W2)
+# Hidden → output multiplication
+
+o = sigmoid(y)
+# Final output after sigmoid
+
+print("Output of output layer (o) =", o)
+
+# Step 5: Derivative of sigmoid
+def d_sigmoid(x):
+    return x*(1-x)
+# Used in backpropagation
+# Derivative of sigmoid when input is already sigmoid output
+
+# Step 6: Training (Backpropagation)
+for i in range (3000):
+    
+    # Forward pass
+    x = np.dot(X, W1)
+    h = sigmoid(x)
+    y = np.dot(h, W2)
+    o = sigmoid(y)
+
+    # Error calculation
+    e = Y - o
+    # Difference between actual and predicted output
+
+    print("MSE=", np.mean(e**2))
+    # Mean Squared Error (loss)
+
+    # Output layer gradient
+    d_output = e * d_sigmoid(o)
+    # Error * derivative → gradient at output layer
+
+    print("d_output=", d_output)
+
+    # Hidden layer gradient
+    d_hidden = (np.dot(d_output, W2.T)) * d_sigmoid(h)
+    # Backpropagate error to hidden layer
+    # Multiply with transpose of W2
+
+    print("d_hidden=", d_hidden)
+    
+    # Update weights (Gradient Descent)
+    W2 = W2 + np.dot(h.T, d_output) * lr
+    # Adjust weights between hidden → output
+
+    W1 = W1 + np.dot(X.T, d_hidden) * lr
+    # Adjust weights between input → hidden
+
+# Step 7: Final Output
+print("FINAL OUTPUT")
+
+o = [[1 if val > 0.5 else 0] for [val] in o]
+# Convert probabilities → binary (0 or 1)
+
+o = np.array(o)
+
+print("o=", o)
+
+# Step 8: Final weights
+print("INAL WEIGHTS")   # Typo: should be "FINAL WEIGHTS"
+
+print("W2=", W2)
+# Final hidden → output weights
+
+print("W1=", W1)
+# Final input → hidden weights
