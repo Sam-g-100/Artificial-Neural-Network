@@ -1,0 +1,40 @@
+# Define a function for MP (McCulloch-Pitts) Neuron
+def MP_neuron(x1, x2):
+
+    # Assign weight for first input x1
+    w1 = 1
+
+    # Assign weight for second input x2
+    w2 = -1
+
+    # Set threshold value
+    theta = 1
+
+    # Calculate weighted sum of inputs
+    weighted_sum = w1*x1 + w2*x2
+
+    # Check if weighted sum is greater than or equal to threshold
+    if weighted_sum >= theta:
+
+        # If condition is true, neuron activates and returns 1
+        return 1
+    else:
+
+        # Otherwise neuron does not activate and returns 0
+        return 0
+
+
+# List of all possible input combinations
+x = [(0,0), (0,1), (1,0), (1,1)]
+
+# Print heading
+print("x1 x2 output")
+
+# Print separator line
+print("------------")
+
+# Loop through each input pair
+for x1, x2 in x:
+
+    # Call MP_neuron function and print result
+    print(x1, x2, MP_neuron(x1, x2))
