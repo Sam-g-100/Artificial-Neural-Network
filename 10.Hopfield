@@ -1,0 +1,55 @@
+import numpy as np  
+# Import NumPy for matrix and vector operations
+
+# Step 1: Define stored memory patterns
+p = np.array([
+    [1,-1,-1,1],
+    [-1,1,-1,1],
+    [-1,1,1,-1],
+    [1,-1,1,-1]
+])
+# 'p' is a set of bipolar patterns (1 and -1)
+# Each row is a stored memory in Hopfield network
+
+# Step 2: Compute weight matrix
+w = np.dot(p.T, p)
+# p.T → transpose of matrix p (rows become columns)
+# np.dot(p.T, p) → outer association of all patterns
+# This implements Hebbian learning rule:
+# W = sum of (pattern × pattern^T)
+
+# Step 3: Remove self connections
+np.fill_diagonal(w, 0)
+# Diagonal elements represent neuron self-feedback
+# Hopfield network does not allow self-connection
+# So we set diagonal values to 0
+
+# Step 4: Print weight matrix
+print("Weight Matrix:\n", w)
+# Displays learned associative memory weights
+
+# Step 5: Define noisy/distorted input patterns
+n = np.array([
+    [1,1,-1,1],
+    [-1,-1,-1,1],
+    [1,1,1,-1],
+    [1,-1,1,1]
+])
+# These are slightly corrupted versions of stored patterns
+# Used to test memory recall ability
+
+# Step 6: Compute network activation
+x = np.dot(w, n)
+# Multiply weight matrix with input patterns
+# This gives neuron activation values
+
+# Step 7: Apply activation function
+y = np.where(x >= 0, 1, -1)
+# Threshold function:
+# If value >= 0 → output = 1
+# If value < 0 → output = -1
+# Converts activation into bipolar output
+
+# Step 8: Print final output
+print("\nOutput Pattern:\n", y)
+# Shows recovered/stabilized memory patterns
