@@ -1,0 +1,53 @@
+import numpy as np   # Import NumPy for array operations
+
+# Input dataset (4 patterns, each with 4 binary features)
+X = np.array([
+    [1, 1, 0, 0],   # Pattern 1
+    [1, 0, 0, 0],   # Pattern 2
+    [0, 0, 1, 1],   # Pattern 3
+    [0, 0, 1, 0]    # Pattern 4
+])
+
+rho = 0.6   # Vigilance parameter (similarity threshold)
+
+clusters = []   # Empty list to store clusters
+
+# Loop through each input pattern
+for x in X:
+    print("Input:", x)   # Show current input
+    flag = 0             # Flag = 0 → no matching cluster found yet
+
+    # Check input against all existing clusters
+    for i in range(len(clusters)):
+        c = clusters[i]   # Get current cluster
+
+        # Calculate similarity (match score)
+        # np.minimum(x, c) → finds common 1s (intersection)
+        # np.sum(...) → counts number of matching features
+        # np.sum(x) → total 1s in input
+        match = np.sum(np.minimum(x, c)) / np.sum(x)
+
+        # If similarity is greater than threshold (rho)
+        if match >= rho:
+            # Update cluster by keeping only common features
+            clusters[i] = np.minimum(x, c)
+
+            print("Updated Cluster", i, ":", clusters[i])
+
+            flag = 1   # Mark that cluster is found
+            break      # Stop checking further clusters
+
+    # If no matching cluster found
+    if flag == 0:
+        clusters.append(x.copy())   # Create new cluster (copy to avoid reference issues)
+        print("New Cluster", len(clusters)-1, ":", x)
+
+    print()   # Blank line for readability
+
+# Print final clusters
+print("Final Clusters:")
+for i in range(len(clusters)):
+    print(i, ":", clusters[i])   # Show each cluster
+
+# Print total number of clusters formed
+print("Number of clusters:", len(clusters))
